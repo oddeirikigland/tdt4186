@@ -3,13 +3,18 @@
  *
  */
 public class Customer {
+    private int id;
+    private int numberOfOrders;
+    private int eatenOrders;
+    private int takeAwayOrders;
+
 
     /**
      *  Creates a new Customer.
      *  Each customer should be given a unique ID
      */
-    public Customer() {
-        // TODO Implement required functionality
+    public Customer(int id) {
+        this.id = id;
     }
 
 
@@ -17,7 +22,12 @@ public class Customer {
      * Here you should implement the functionality for ordering food as described in the assignment.
      */
     public synchronized void order(){
-        // TODO Implement required functionality
+        numberOfOrders = (int)(Math.random() * SushiBar.maxOrder + 1);
+        eatenOrders = (int)(Math.random() * numberOfOrders + 1);
+        takeAwayOrders = numberOfOrders - eatenOrders;
+        SushiBar.totalOrders.add(numberOfOrders);
+        SushiBar.servedOrders.add(eatenOrders);
+        SushiBar.takeawayOrders.add(takeAwayOrders);
     }
 
     /**
@@ -25,7 +35,7 @@ public class Customer {
      * @return Should return the customerID
      */
     public int getCustomerID() {
-        // TODO Implement required functionality
+        return id;
     }
 
     // Add more methods as you see fit

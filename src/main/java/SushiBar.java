@@ -2,11 +2,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.*;
 
 
 public class SushiBar {
 
     //SushiBar settings
+    private static List<Waitress> waitressList = new ArrayList<>();
     private static int waitingAreaCapacity = 15;
     private static int waitressCount = 8;
     private static int duration = 4;
@@ -18,7 +20,7 @@ public class SushiBar {
 
     //Creating log file
     private static File log;
-    private static String path = "./";
+    private static String path = "./src/main/resources/";
 
     //Variables related to statistics
     public static SynchronizedInteger customerCounter;
@@ -36,7 +38,36 @@ public class SushiBar {
         servedOrders = new SynchronizedInteger(0);
         takeawayOrders = new SynchronizedInteger(0);
 
-        // TODO initialize the bar and start the different threads
+        new Clock(duration);
+
+        WaitingArea waitingArea = new WaitingArea(waitingAreaCapacity);
+        Door door = new Door(waitingArea);
+        door.start();
+
+        for (int i=0; i<waitressCount; i++) {
+            Waitress waitress = new Waitress(waitingArea);
+            waitress.start();
+            waitressList.add(waitress);
+        }
+
+        try {
+            door.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        waitressList.forEach(waitress -> {
+            try {
+                waitress.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        SushiBar.write("***** NO MORE CUSTOMERS - THE SHOP IS CLOSED NOW. *****");
+        System.out.println("\n\n");
+        SushiBar.write("***** Statistics *****");
+        SushiBar.write("Total number of orders: " + SushiBar.totalOrders.get());
+        SushiBar.write("Total number of takeaway orders: " + SushiBar.takeawayOrders.get());
+        SushiBar.write("Total number of orders that customers have eaten at the bar: " + SushiBar.servedOrders.get());
     }
 
     //Writes actions in the log file and console

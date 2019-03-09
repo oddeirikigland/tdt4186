@@ -2,14 +2,15 @@
  * This class implements the Door component of the sushi bar assignment
  * The Door corresponds to the Producer in the producer/consumer problem
  */
-public class Door implements Runnable {
+public class Door extends Thread {
+    private WaitingArea waitingArea;
 
     /**
      * Creates a new Door. Make sure to save the
      * @param waitingArea   The customer queue waiting for a seat
      */
     public Door(WaitingArea waitingArea) {
-        // TODO Implement required functionality
+        this.waitingArea = waitingArea;
     }
 
     /**
@@ -18,7 +19,16 @@ public class Door implements Runnable {
      */
     @Override
     public void run() {
-        // TODO Implement required functionality
+        while(SushiBar.isOpen) {
+            Customer customer = new Customer(SushiBar.customerCounter.incrementAndGet());
+            SushiBar.write(Thread.currentThread().getName() + ": Customer #" + customer.getCustomerID() + " is now created.");
+            waitingArea.enter(customer);
+            try {
+                Thread.sleep(SushiBar.doorWait);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     // Add more methods as you see fit

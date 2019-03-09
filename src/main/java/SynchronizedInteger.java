@@ -23,4 +23,9 @@ public class SynchronizedInteger {
         return c;
     }
 
+    public synchronized int incrementAndGet() {
+        this.increment();
+        return this.get();
+    }
+
 }
