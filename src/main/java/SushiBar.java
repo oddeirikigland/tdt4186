@@ -79,7 +79,6 @@ public class SushiBar {
             bw.close();
             System.out.println(Clock.getTime() + ", " + str);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

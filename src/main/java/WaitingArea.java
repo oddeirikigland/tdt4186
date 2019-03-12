@@ -24,15 +24,18 @@ public class WaitingArea {
      * @param customer A customer created by Door, trying to enter the waiting area
      */
     public synchronized void enter(Customer customer) {
-        if (this.getSize() <= this.getCustomers().size()) {
+        while (this.getSize() <= this.getCustomers().size()) {
             try {
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        this.getCustomers().add(customer);
-        notify();
+        if (SushiBar.isOpen) {
+            this.getCustomers().add(customer);
+            SushiBar.write(Thread.currentThread().getName() + ": Customer #" + customer.getCustomerID() + " is now waiting.");
+            notify();
+        }
     }
 
     /**
